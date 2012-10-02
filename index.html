@@ -1,0 +1,426 @@
+<!doctype html>  
+<html lang="en">
+    
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Introduction to Play Framework</title>
+
+        <meta name="description" content="The Play Framework is a lightweight, stateless Web framework for Java and Scala applications. It’s built on Java NIO, so it’s highly scalable. This session gives you an introduction to building Web applications with the Play Framework. You will learn how to set up routes and create controllers and views, plus how to deploy Play Framework applications in the cloud.">
+        <meta name="author" content="James Ward">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+        
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+        <style type="text/css">
+            .reveal .controls {
+                bottom: auto;
+                top: 0px;
+            }
+
+            .reveal .slides {
+                top: 20px;
+                margin-top: 0px;
+            }
+
+            .reveal section img {
+                margin-top: 0px;
+            }
+
+            .comparison {
+                position: absolute;
+            }
+        
+            .comparison .fragment {
+                position: absolute;
+                top: 0;
+                opacity: 0;
+            }
+        </style>
+    </head>
+    
+    <body>
+        
+        <div class="reveal">
+
+            <!-- Used to fade in a background when a specific slide state is reached -->
+            <div class="state-background"></div>
+            
+            <aside style="display: block; position: fixed; bottom: 5px; left: 10px;">
+                <a href="http://heroku.com"><img src="assets/heroku-logo-light-88x31.png"></a>
+            </aside>
+            
+            <aside style="display: block; position: fixed; bottom: 10px; right: 10px;">
+                <a href="http://twitter.com/_JamesWard"  style="font-size: 20px;">@_JamesWard</a>
+            </aside>
+            
+            
+            <div class="slides">
+            
+                <section>
+                    <h2>Introduction to Play Framework</h2>
+                    <br/>
+                    <h3 class="inverted">James Ward</h3>
+                    <script>
+                        // Delicously hacky. Look away.
+                        if( navigator.userAgent.match( /(iPhone|iPad|iPod|Android)/i ) ) document.write( '<p style="color: rgba(0,0,0,0.3); text-shadow: none;">('+'Tap to navigate'+')</p>' );
+                    </script>
+                </section>
+
+                <section>
+                    <div class="comparison" style="left: 100px; width: 700px; height: 100%;"
+>
+                        <blockquote style="position: absolute; width: 100%; background: rgba(32, 32, 32, 0.6);">Play is based on a lightweight, stateless, web-friendly architecture and features predictable and minimal resource consumption (CPU, memory, threads) for highly-scalable applications - thanks to its reactive model, based on Iteratee IO.</blockquote>
+                        <blockquote class="fragment" style="position: absolute; width: 100%; background: rgba(32, 32, 32, 0.8);"><span style="opacity: 0">Play is based on a </span> lightweight, stateless, web-friendly<span style="opacity: 0"> architecture and features predictable and minimal resource consumption (CPU, memory, threads)</span> for highly-scalable applications<span style="opacity: 0"> - thanks to its reactive model, based on Iteratee IO.</span></blockquote>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>My Top 10 Favorite Features</h2>
+                    <ul style="list-style-type: none;">
+                        <li>0) Simple</li>
+                        <li>1) URL Routing</li>
+                        <li>2) Class Reloading</li>
+                        <li>3) Share-Nothing</li>
+                        <li>4) Java &amp; Scala Support</li>
+                        <li>5) Great Testing Support</li>
+                        <li>6) JPA/EBean Support</li>
+                        <li>7) NIO Server (Netty)</li>
+                        <li>8) Asset Compiler</li>
+                        <li>9) Instant Deployment on Heroku</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Create a new Play App</h2>
+                    <pre><code>$ play new foobar</code></pre>
+                    <br/>
+                    <h2>IDE Support</h2>
+                    <pre><code>$ play idea</code></pre>
+                    <br/>
+                    <h2>Run the App</h2>
+                    <pre><code>$ play ~run</code></pre>
+                    <br/>
+                    <a href="http://localhost:9000">http://localhost:9000</a>
+                </section>
+
+                <section>
+                    <h2>Routes</h2>
+                    <br/>
+                    <pre><code>GET     /                       controllers.Application.index()
+GET     /foo                    controllers.Application.index()</code></pre>
+                </section>
+
+                <section>
+                    <h2>Controllers</h2>
+                    <br/>
+                    <pre><code>public static Result index() {
+    return ok(index.render("Your new application is ready."));
+}</pre></code>
+                </section>
+
+                <section>
+                    <h2>Views</h2>
+                    <br/>
+                    <pre><code>@(message: String)
+
+@main("Welcome to Play 2.0") {
+    
+    @message
+    
+}</code></pre>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Tests</h2>
+                        <br/>
+                        <ul>
+                            <li>Based on JUnit</li>
+                            <li>Unit Tests with Mocks</li>
+                            <li>Functional Tests for Templates, Controllers, Router</li>
+                            <li>Integration &amp; UI Tests</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <span>test/ApplicationTest.java</span>
+                        <pre><code>import org.junit.Test;
+import play.mvc.Result;
+
+import static play.test.Helpers.*;
+import static org.fest.assertions.Assertions.*;
+
+public class ApplicationTest {
+
+}</code></pre>
+                        <br/>
+                        <pre><code>$ play test</code></pre>
+                    </section>
+                    <section>
+                        <h3>Test a Route</h3>
+                        <br/>
+                        <pre><code>@Test
+public void testFooRoute() {
+    Result result = routeAndCall(fakeRequest(GET, "/foo"));
+    assertThat(result).isNotNull();
+}</code></pre>
+                    </section>
+                    <section>
+                        <h3>Test a Controller</h3>
+                        <br/>
+                        <pre><code>@Test
+public void callIndex() {
+    Result result = callAction(controllers.routes.ref.Application.index());
+    assertThat(status(result)).isEqualTo(OK);
+    assertThat(contentType(result)).isEqualTo("text/html");
+    assertThat(charset(result)).isEqualTo("utf-8");
+    assertThat(contentAsString(result)).contains("hello, world");
+}</code></pre>
+                    </section>
+                    <section>
+                        <h3>Test a Template</h3>
+                        <br/>
+                        <pre><code>@Test
+public void indexTemplate() {
+    Content html = views.html.index.render("test");
+    assertThat(contentType(html)).isEqualTo("text/html");
+    assertThat(contentAsString(html)).contains("TEST");
+}</code></pre>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Models</h2>
+                        <br/>
+                        <ul>
+                            <li>EBean for Java</li>
+                            <li>JPA Annotations</li>
+                            <li>Versioned Evolution Scripts</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <span>conf/application.conf</span>
+                        <pre><code>db.default.driver=org.h2.Driver
+db.default.url="jdbc:h2:mem:play"
+
+ebean.default="models.*"</code></pre>
+                    </section>
+                    <section>
+                        <span>app/models/Bar.java</span>
+                        <pre><code>package models;
+
+import play.db.ebean.Model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Task extends Model {
+
+    @Id
+    public String id;
+
+    public String contents;
+
+}</code></pre>
+                    </section>
+                    <section>
+                        <h3 class="inverted">Test a Model</h3>
+                        <br/>
+                        <pre><code>@Test
+public void create() {
+    running(fakeApplication(), new Runnable() {
+        public void run() {
+            Task task = new Task();
+            task.contents = "Write a test";
+            task.save();
+            assertThat(task.id).isNotNull();
+        }
+    });
+}</code></pre>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Forms</h2>
+                        <br/>
+                        <ul>
+                            <li>Controller: Bind request data to VO</li>
+                            <li>View: Server-side Form Helpers</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3 class="inverted">Controller</h3>
+                        <br/>
+                        <pre><code>public static Result addBar() {
+    Form<Bar> form = form(Bar.class).bindFromRequest();
+    Bar bar = form.get();
+    bar.save();
+    return redirect(routes.Application.index());
+}</code></pre>
+                    </section>
+                    <section>
+                        <h3 class="inverted">Route</h3>
+                        <br/>
+                        <pre><code>POST    /bars                   controllers.Application.addBar()</code></pre>
+                    </section>
+                    <section>
+                        <h3 class="inverted">View</h3>
+                        <br/>
+                        <pre><code>@helper.form(action = routes.Application.addBar()) {
+    &lt;input name="name"/&gt;
+    &lt;input type="submit"/&gt;
+}</code></pre>
+                    </section>
+                </section>
+
+                <section>
+                    <h2>JSON</h2>
+                    <br/>
+                    <span>Controller</span>
+                    <pre><code>public static Result getBars() {
+    List<Bar> bars = new Model.Finder(String.class, Bar.class).all();
+    return ok(toJson(bars));
+}</code></pre>
+                    <span>Route</span>
+                    <pre><code>GET     /bars                  controllers.Application.getBars()</code></pre>
+                </section>
+
+                <section>
+                    <h2>CoffeeScript</h2>
+                    <br/>
+                    <span>app/assets/javascripts/index.coffee</span>
+                    <pre><code>$ -&gt;
+  $.get "/bars", (data) -&gt;
+    $.each data, (index, bar) -&gt;
+      $("#bars").append $("&lt;li&gt;").text bar.name</code></pre>
+                    <br/>
+                    <pre><code>&lt;script src='@routes.Assets.at("javascripts/index.min.js")'&gt;</code></pre>
+                </section>
+
+                <section>
+                    <h2>Form Validation</h2>
+                    <br/>
+                    <h3 class="inverted">Model</h3>
+                    <pre><code>@Constraints.Required
+public String name;</code></pre>
+                    <h3 class="inverted">Controller</h3>
+                    <pre><code>public static Result addBar() {
+    Form<Bar> form = form(Bar.class).bindFromRequest();
+    if (form.hasErrors()) {
+        return badRequest(index.render(form));
+    }
+    else {
+        // save
+    }
+}</code></pre>
+                </section>
+
+                <section>
+                    <h2>Production Ready</h2>
+                    <br/>
+                    <span>project/Build.scala</span>
+                    <pre><code>"postgresql" % "postgresql" % "9.1-901-1.jdbc4"</pre></code>
+                    <br/>
+                    <span>Procfile</span>
+                    <pre><code>web: target/start -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=${DATABASE_URL} ${JAVA_OPTS}</pre></code>
+                </section>
+
+                <section>
+                    <h2>Deploy to Heroku</h2>
+                    <br/>
+                    <pre><code>$ git init
+$ git add .
+$ git commit -m init
+
+$ heroku create
+
+$ git push heroku master
+
+$ heroku open</code></pre>
+                </section>
+
+                <section>
+                    <h2>Questions?</h2>
+                    <br/>
+                    <h3 class="inverted">Learn More:</h3>
+                    <ul>
+                        <li>playframework.org</li>
+                        <li>github.com/jamesward/play2torial</li>
+                    </ul>
+                </section>
+                    
+            </div>
+
+            <!-- The navigational controls UI -->
+            <aside class="controls">
+                <a class="left" href="#">&#x25C4;</a>
+                <a class="right" href="#">&#x25BA;</a>
+                <a class="up" href="#">&#x25B2;</a>
+                <a class="down" href="#">&#x25BC;</a>
+            </aside>
+
+            <!-- Presentation progress bar -->
+            <div class="progress"><span></span></div>
+            
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+
+        <script>
+            // Load reveal.js as well as a classList polyfill if needed
+            head.js( !document.body.classList ? 'lib/js/classList.js' : null )
+                .js( 'js/reveal.js', function() {
+
+                // Parse the query string into a key/value object
+                var query = {};
+                location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+                    query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+                } );
+
+                // Fires when a slide with data-state=customevent is activated
+                Reveal.addEventListener( 'customevent', function() {
+                    console.log( '"customevent" has fired' );
+                } );
+
+                // Fires each time a new slide is activated
+                Reveal.addEventListener( 'slidechanged', function( event ) {
+                    // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+                } );
+
+                // Full list of configuration options available here:
+                // https://github.com/hakimel/reveal.js#configuration
+                Reveal.initialize({
+                    controls: true,
+                    progress: true,
+                    history: true,
+                    rollingLinks: false,
+                    theme: query.theme || 'default', // default/neon/beige
+                    transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
+                });
+
+            } );
+            
+            // Load highlight.js for syntax highlighting of code samples
+            head.js( 'lib/js/highlight.js', function() { 
+                hljs.initHighlightingOnLoad(); 
+            } );
+
+            // If we're runnning the notes server we need to include some additional JS
+            // TODO Is there a better way to determine if we're running the notes server?
+            if( window.location.host === 'localhost:1947' ) {
+                head.js( 'socket.io/socket.io.js', 'plugin/speakernotes/client.js' );
+            }
+        </script>
+        
+    </body>
+</html>
