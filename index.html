@@ -256,12 +256,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Task extends Model {
+public class Bar extends Model {
 
     @Id
     public String id;
 
-    public String contents;
+    public String name;
 
 }</code></pre>
                     </section>
@@ -272,10 +272,10 @@ public class Task extends Model {
 public void create() {
     running(fakeApplication(), new Runnable() {
         public void run() {
-            Task task = new Task();
-            task.contents = "Write a test";
-            task.save();
-            assertThat(task.id).isNotNull();
+            Bar bar = new Bar();
+            bar.name = "Write a test";
+            bar.save();
+            assertThat(bar.id).isNotNull();
         }
     });
 }</code></pre>
