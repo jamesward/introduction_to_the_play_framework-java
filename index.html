@@ -53,8 +53,8 @@
             <!-- Used to fade in a background when a specific slide state is reached -->
             <div class="state-background"></div>
             
-            <aside style="display: block; position: fixed; bottom: 5px; left: 10px;">
-                <a href="http://heroku.com"><img src="assets/heroku-logo-light-88x31.png"></a>
+            <aside style="display: block; position: fixed; bottom: 5px; left: 10px; z-index: 30;">
+                <a href="http://typesafe.com"><img src="assets/logo.png"></a>
             </aside>
             
             <aside style="display: block; position: fixed; bottom: 10px; right: 10px;">
@@ -194,15 +194,19 @@ public class ApplicationTest {
 
 }</code></pre>
                         <br/>
-                        <pre><code>$ play test</code></pre>
+                        <pre><code>$ play ~test</code></pre>
                     </section>
                     <section>
                         <h3>Test a Route</h3>
                         <br/>
                         <pre><code>@Test
-public void testFooRoute() {
-    Result result = routeAndCall(fakeRequest(GET, "/foo"));
-    assertThat(result).isNotNull();
+public void fooRoute() {
+    running(fakeApplication(), new Runnable() {
+        public void run() {
+            Result result = route(fakeRequest("GET", "/foo"));
+            assertThat(result).isNotNull();
+        }
+    });
 }</code></pre>
                     </section>
                     <section>
@@ -210,11 +214,15 @@ public void testFooRoute() {
                         <br/>
                         <pre><code>@Test
 public void callIndex() {
-    Result result = callAction(controllers.routes.ref.Application.index());
-    assertThat(status(result)).isEqualTo(OK);
-    assertThat(contentType(result)).isEqualTo("text/html");
-    assertThat(charset(result)).isEqualTo("utf-8");
-    assertThat(contentAsString(result)).contains("hello, world");
+    running(fakeApplication(), new Runnable() {
+        public void run() {
+            Result result = callAction(controllers.routes.ref.Application.index());
+            assertThat(status(result)).isEqualTo(OK);
+            assertThat(contentType(result)).isEqualTo("text/html");
+            assertThat(charset(result)).isEqualTo("utf-8");
+            assertThat(contentAsString(result)).contains("Your new application is ready.");
+        }
+    });
 }</code></pre>
                     </section>
                     <section>
@@ -224,7 +232,7 @@ public void callIndex() {
 public void indexTemplate() {
     Content html = views.html.index.render("test");
     assertThat(contentType(html)).isEqualTo("text/html");
-    assertThat(contentAsString(html)).contains("TEST");
+    assertThat(contentAsString(html)).contains("test");
 }</code></pre>
                     </section>
                 </section>
@@ -295,8 +303,7 @@ public void create() {
                         <h3 class="inverted">Controller</h3>
                         <br/>
                         <pre><code>public static Result addBar() {
-    Form<Bar> form = form(Bar.class).bindFromRequest();
-    Bar bar = form.get();
+    Bar bar = Form.form(Bar.class).bindFromRequest().get();
     bar.save();
     return redirect(routes.Application.index());
 }</code></pre>
